@@ -1,0 +1,80 @@
+<div class="wrapper">
+  <form [formGroup]="registerForm" (ngSubmit)="register()">
+    <h1>Register</h1>
+
+    <div class="input-box">
+      <input type="text" formControlName="name" placeholder="Name" />
+      <i class="bx bxs-user"></i>
+    </div>
+    <div
+      *ngIf="
+        registerForm.get('name')?.invalid && registerForm.get('name')?.touched
+      "
+      class="error-msg"
+    >
+      Name must be at least 3 characters.
+    </div>
+
+    <div class="input-box">
+      <input type="email" formControlName="email" placeholder="Email" />
+      <i class="bx bxs-envelope"></i>
+    </div>
+    <div
+      *ngIf="
+        registerForm.get('email')?.invalid && registerForm.get('email')?.touched
+      "
+      class="error-msg"
+    >
+      Please enter a valid email.
+    </div>
+
+    <div class="input-box">
+      <input
+        type="password"
+        formControlName="password"
+        placeholder="Password"
+      />
+      <i class="bx bxs-lock-alt"></i>
+    </div>
+    <div
+      *ngIf="
+        registerForm.get('password')?.invalid &&
+        registerForm.get('password')?.touched
+      "
+      class="error-msg"
+    >
+      Password must be at least 6 characters.
+    </div>
+
+    <div class="input-box">
+      <input
+        type="password"
+        formControlName="confirmPassword"
+        placeholder="Confirm Password"
+      />
+      <i class="bx bxs-lock-alt"></i>
+    </div>
+    <div
+      *ngIf="
+        registerForm.hasError('passwordsMismatch') &&
+        registerForm.get('confirmPassword')?.touched
+      "
+      class="error-msg"
+    >
+      Passwords do not match.
+    </div>
+
+    <div *ngIf="error" class="error-msg">{{ error }}</div>
+
+    <button type="submit" class="btn" [disabled]="registerForm.invalid">
+      Register
+    </button>
+
+    <div class="register-link">
+      <p>
+        Already have an account?
+        <a (click)="navigateToLogin()">Login</a>
+      </p>
+    </div>
+  </form>
+</div>

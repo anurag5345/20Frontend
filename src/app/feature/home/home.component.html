@@ -1,0 +1,69 @@
+<div class="home-hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <h1>Invoice Generator</h1>
+      <p class="lead">Create, manage and download professional invoices in seconds.</p>
+
+      <div class="hero-cta">
+        <button class="btn primary" routerLink="/invoices/new">Create Invoice</button>
+        <button class="btn small" routerLink="/invoices">View Invoices</button>
+      </div>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="value" routerLink="/invoices">{{ totalInvoices || '—' }}</div>
+        <div class="label" routerLink="/invoices">Invoices</div>
+      </div>
+      <div class="stat">
+        <div class="value">
+          {{ totalDue !== null ? totalDue : '—' }}
+          <span class="currency">₹</span>
+        </div>
+        <div class="label">Amount Due (₹)</div>
+      </div>
+      <div class="stat">
+        <div class="value" routerLink="/customers">{{ customerCount || '—' }}</div>
+        <div class="label" type="button" routerLink="/customers">Customers</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="home-content">
+  <div class="card">
+    <h3>Recent invoices</h3>
+    @if(recentInvoices && recentInvoices.length){
+    <div>
+      <ul class="recent-list">
+        <li *ngFor="let inv of recentInvoices">
+          <div class="inv-number">
+            <span class="label">Invoice #</span>
+            <span class="value">#{{ inv.invoiceNumber }}</span>
+          </div>
+          <div class="inv-customer">
+            <span class="label">Customer</span>
+            <span class="value">{{ inv.customerName }}</span>
+          </div>
+          <div class="phoneNumber">
+            <span class="label">Phone Number</span>
+            <span class="value">{{ inv.phoneNumber }}</span>
+          </div>
+          <div class="inv-status">
+            <span class="label">Status</span>
+            <span class="value">{{ inv.status }}</span>
+          </div>
+          <div class="inv-amount">
+            <span class="label">Amount</span>
+            <span class="value">₹{{ inv.totalWithGST }}</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+    } @else {
+    <ng-template #noRecent>
+      <p class="muted">Open the invoices list to see recent activity.</p>
+    </ng-template>
+    }
+  </div>
+</div>

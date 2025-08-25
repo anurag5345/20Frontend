@@ -1,0 +1,207 @@
+<div class="wrapper">
+  <div class="title-row">
+    <h1>{{ mode === "create" ? "Create Invoice" : "Edit Invoice" }}</h1>
+    <div class="top-actions">
+      <button
+        class="btn small"
+        (click)="downloadPreview()"
+        [disabled]="form.invalid"
+      >
+        Download PDF
+      </button>
+    </div>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="row">
+      <mat-form-field appearance="fill" class="field">
+        <mat-label>Invoice #</mat-label>
+        <input matInput formControlName="invoiceNumber" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="field small">
+        <mat-label>Issue Date</mat-label>
+        <input matInput [matDatepicker]="d1" formControlName="issueDate" />
+        <mat-datepicker-toggle matSuffix [for]="d1"></mat-datepicker-toggle>
+        <mat-datepicker #d1></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="field small">
+        <mat-label>Phone</mat-label>
+        <input matInput formControlName="phoneNumber" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="field small">
+        <mat-label>Due Date</mat-label>
+        <input
+          matInput
+          [matDatepicker]="d2"
+          formControlName="dueDate"
+          [matDatepickerFilter]="onlyToday"
+        />
+        <mat-datepicker-toggle matSuffix [for]="d2"></mat-datepicker-toggle>
+        <mat-datepicker #d2></mat-datepicker>
+        <mat-error *ngIf="form.get('dueDate')?.hasError('dueDateBeforeToday')">
+          Due date must be today or a future date.
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <mat-form-field appearance="fill" class="field">
+        <mat-label>Customer</mat-label>
+        <input matInput formControlName="customerName" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="field">
+        <mat-label>Address</mat-label>
+        <input matInput formControlName="customerAddress" />
+      </mat-form-field>
+    </div>
+
+    <h2 class="section-title">Items</h2>
+    <div formArrayName="items" class="table-container">
+      <table class="table-items">
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Rate</th>
+            <th>Unit</th>
+            <th>GST %</th>
+            <th>Amount</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let it of items().controls; let i = index"
+            [formGroupName]="i"
+          >
+            <td>
+              <input matInput formControlName="description" id="desc-{{ i }}" placeholder="Enter Description"/>
+            </td>
+            <td class="num-cell">
+              <div class="num-controls">
+                <button
+                  type="button"
+                  class="num-btn minus"
+                  (click)="increment(i, 'rate', -1)"
+                >
+                  -
+                </button>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="rate"
+                  id="rate-{{ i }}"
+                  step="1"
+                  min="0"
+                  pattern="\d*"
+                />
+                <button
+                  type="button"
+                  class="num-btn plus"
+                  (click)="increment(i, 'rate', 1)"
+                >
+                  +
+                </button>
+              </div>
+            </td>
+            <td class="num-cell">
+              <div class="num-controls">
+                <button
+                  type="button"
+                  class="num-btn minus"
+                  (click)="increment(i, 'unitPrice', -1)"
+                >
+                  -
+                </button>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="unitPrice"
+                  id="unit-{{ i }}"
+                  step="1"
+                  min="0"
+                  pattern="\d*"
+                />
+                <button
+                  type="button"
+                  class="num-btn plus"
+                  (click)="increment(i, 'unitPrice', 1)"
+                >
+                  +
+                </button>
+              </div>
+            </td>
+            <td class="num-cell">
+              <div class="num-controls">
+                <button
+                  type="button"
+                  class="num-btn minus"
+                  (click)="increment(i, 'gstRate', -1)"
+                >
+                  -
+                </button>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="gstRate"
+                  id="gst-{{ i }}"
+                  step="0.5"
+                  min="0"
+                />
+                <button
+                  type="button"
+                  class="num-btn plus"
+                  (click)="increment(i, 'gstRate', 1)"
+                >
+                  +
+                </button>
+              </div>
+            </td>
+            <td>
+              {{
+                items().at(i).value.rate * items().at(i).value.unitPrice
+                  | number : "1.2-2"
+              }}
+            </td>
+            <td>
+              <button
+                mat-icon-button
+                class="item-edit"
+                (click)="focusField(i, 'desc')"
+              >
+                <i class="pi pi-pen-to-square" style="font-size: 1.5rem"></i>
+              </button>
+              <button
+                mat-icon-button
+                class="item-delete"
+                (click)="removeItem(i)"
+              >
+                <i class="pi pi-trash" style="font-size: 1.5rem"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="add-btn">
+      <button class="btn small" type="button" (click)="addItem()">
+        + Add Item
+      </button>
+    </div>
+
+    <div class="totals">
+      <div>Subtotal: {{ totals.subtotal | number : "1.2-2" }}</div>
+      <div>GST: {{ totals.gst | number : "1.2-2" }}</div>
+      <div>Total: {{ totals.total | number : "1.2-2" }}</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn" type="submit">Save</button>
+      <a class="btn danger" routerLink="/invoices">Cancel</a>
+    </div>
+  </form>
+</div>

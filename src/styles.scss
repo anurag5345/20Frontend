@@ -1,1 +1,152 @@
-/* You can add global styles to this file, and also import other style files */
+@import "@angular/material/prebuilt-themes/indigo-pink.css";
+@import "primeicons/primeicons.css";
+@import url("https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
+body {
+  margin: 0;
+  font-family: Roboto, Arial, sans-serif;
+  background: #f5f7fb;
+}
+
+.app-container {
+  max-width: 1100px;
+  margin: 24px auto;
+  padding: 12px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+  margin-bottom: 16px;
+}
+
+.table-items {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-items th,
+.table-items td {
+  border: 1px solid #e6eef8;
+  padding: 8px;
+}
+
+.transparent-header {
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  backdrop-filter: blur(6px);
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 32px;
+  height: 64px;
+}
+
+.logo a {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1976d2;
+  text-decoration: none;
+}
+
+.nav-links a {
+  margin-left: 24px;
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.nav-links a.active,
+.nav-links a:hover {
+  color: #1976d2;
+  text-decoration: underline;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: url("./app/assets/bg2.jpg") no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.field {
+  flex: 1 1 220px;
+  min-width: 0; 
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table-items--wide {
+  min-width: 720px; 
+}
+
+@media (max-width: 720px) {
+  .app-container {
+    max-width: 100%;
+    padding: 8px;
+  }
+
+  .logo a {
+    font-size: 1.2rem;
+  }
+
+  .nav-links a {
+    margin-left: 12px;
+    font-size: 0.95rem;
+  }
+
+  .card {
+    padding: 12px;
+  }
+}
+
+body.red-gradient-active::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0; 
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 74, 74, 0.9),
+    rgba(255, 30, 30, 0.8)
+  );
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 240ms ease, transform 240ms ease;
+}
+
+.wrapper {
+  position: relative;
+  z-index: 1;
+}

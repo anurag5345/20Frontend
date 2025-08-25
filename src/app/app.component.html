@@ -1,0 +1,23 @@
+<header class="transparent-header">
+  <nav class="navbar">
+    <div class="logo">
+      <a routerLink="/">InvoiceGen</a>
+    </div>
+    <div class="nav-links">
+      <a routerLink="/" routerLinkActive="active">Home</a>
+      <a routerLink="/invoices" *ngIf="isLoggedIn()" routerLinkActive="active"
+        >Invoices</a
+      >
+      <a routerLink="/login" *ngIf="!isLoggedIn()" routerLinkActive="active"
+        >Login</a
+      >
+      <a routerLink="/register" *ngIf="!isLoggedIn()" routerLinkActive="active"
+        >Register</a
+      >
+      <a (click)="logout()" *ngIf="isLoggedIn()">Logout</a>
+    </div>
+  </nav>
+</header>
+<main style="margin-top: 64px">
+  <router-outlet></router-outlet>
+</main>

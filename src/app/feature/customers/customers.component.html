@@ -1,0 +1,33 @@
+<div class="customers">
+  <h1>Customers</h1>
+
+  <div *ngIf="loading" class="loading">Loading…</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div class="table-container" *ngIf="!loading && rows.length">
+    <table class="table-items">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Invoices</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of rows; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ r.name }}</td>
+          <td>{{ r.phone || '—' }}</td>
+          <td>{{ r.invoices }}</td>
+          <td>{{ r.total | number : '1.2-2' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!loading && rows.length === 0" class="no-data">
+    No customers found.
+  </div>
+</div>

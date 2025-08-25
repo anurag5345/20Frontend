@@ -1,0 +1,88 @@
+<div class="wrapper">
+  <div class="header">
+    <h1>Invoices</h1>
+    <div class="header-actions">
+      <input class="search" placeholder="Search Customer by Name..." [(ngModel)]="searchText" />
+      <div class="status-filters">
+        <label class="sr-only" for="statusFilter">Filter by status </label>
+        <select id="statusFilter" class="status-select" [(ngModel)]="statusFilter">
+          <option value="all">All</option>
+          <option value="paid">Paid</option>
+          <option value="unpaid">Unpaid</option>
+        </select>
+      </div>
+      <button class="btn" routerLink="/invoices/new">+ New Invoice</button>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table-items table-items--wide">
+      <thead>
+        <tr>
+          <th>Invoice #</th>
+          <th>Customer</th>
+          <th>Phone</th>
+          <th>Issue Date</th>
+          <th>Due Date</th>
+          <th>Status</th>
+          <th>Total (₹)</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let inv of filteredInvoices">
+          <td class="col-invoice">{{ inv.invoiceNumber }}</td>
+          <td class="col-customer">{{ inv.customerName }}</td>
+          <td class="col-phone">{{ inv.phoneNumber || 'N/A' }}</td>
+          <td class="col-date">{{ inv.issueDate | date }}</td>
+          <td class="col-due">{{ inv.dueDate | date }}</td>
+          <td class="col-status">
+            <button
+              type="button"
+              class="status-badge"
+              [class.paid]="inv.status === 'paid' || inv.paid"
+              [class.unpaid]="inv.status === 'unpaid' || !inv.paid"
+              (click)="toggleStatus(inv)"
+              [attr.aria-pressed]="inv.status === 'paid' || inv.paid"
+              [disabled]="inv.status === 'paid' || inv.paid"
+              title="{{ inv.status || (inv.paid ? 'paid' : 'unpaid') }}"
+            >
+              {{ inv.status || (inv.paid ? 'paid' : 'unpaid') }}
+            </button>
+          </td>
+
+          <td class="col-total">
+            {{ inv.totalWithGST || 0 | number : '1.2-2' }}
+          </td>
+          <td class="actions col-actions">
+            <button
+              class="btn small"
+              matTooltip="view Invoice"
+              aria-label="Button that displays a tooltip when focused or hovered over"
+              (click)="view(inv.id)"
+            >
+              <i class="pi pi-eye" style="font-size: 1.1rem; color: white"></i>
+            </button>
+            <button
+              class="btn small"
+              matTooltip="Edit Invoice"
+              aria-label="Button that displays a tooltip when focused or hovered over"
+              (click)="edit(inv.id)"
+            >
+              <i class="pi pi-file-edit" style="font-size: 1.1rem; color: white"></i>
+            </button>
+            <button
+              class="btn small danger"
+              matTooltip="Delete Invoice"
+              aria-label="Button that displays a tooltip when focused or hovered over"
+              
+              (click)="delete(inv.id)"
+            >
+              <i class="pi pi-trash" style="font-size: 1.2rem; color: white"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
