@@ -18,6 +18,12 @@
   .hero-text {
     flex: 1;
 
+    .value {
+      color: #ffd54f; 
+    }
+    .label {
+      color: #ffffff;
+    }
     h1 {
       font-size: 36px;
       margin: 0 0 8px 0;
@@ -25,6 +31,12 @@
       letter-spacing: 0.2px;
     }
 
+    cursor: pointer;
+    transition: background 120ms ease-in-out, transform 120ms ease-in-out;
+    &:hover {
+      background: rgba(255, 255, 255, 0.02);
+      transform: translateY(-1px);
+    }
     .lead {
       color: rgba(255, 255, 255, 0.85);
       margin-bottom: 16px;
@@ -62,7 +74,7 @@
       }
 
       .label {
-        font-size: 12px;
+        font-size: 16px;
         color: rgba(255, 255, 255, 0.8);
       }
       [routerLink] {
@@ -72,11 +84,11 @@
 
       &:hover .value,
       [routerLink]:hover {
-        color: #2e4da0; 
+        color: #2e4da0;
         transform: translateY(-1px);
       }
       &:hover .label {
-        color: #5246b2;
+        color: #1976d2;
       }
     }
   }
@@ -189,7 +201,7 @@
     .inv-status .label,
     .inv-amount .label {
       color: rgba(255, 255, 255, 0.7);
-      font-size: 12px;
+      font-size: 18px;
       font-weight: 600;
     }
 
@@ -199,6 +211,25 @@
     .inv-customer .value,
     .inv-amount .value {
       color: #ffffff;
+      font-weight: 800;
+    }
+
+    .inv-number .label:hover,
+    .inv-customer .label:hover,
+    .phoneNumber .label:hover,
+    .inv-status .label:hover,
+    .inv-amount .label:hover {
+      color: #1976d2;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .inv-number .value:hover,
+    .phoneNumber .value:hover,
+    .inv-status .value:hover,
+    .inv-customer .value:hover,
+    .inv-amount .value:hover {
+      color: #1976d2;
       font-weight: 800;
     }
   }
@@ -215,4 +246,22 @@
 
 .recent-list li:last-child {
   border-bottom: none;
+}
+
+.recent-list li {
+  cursor: pointer;
+  transition: background 160ms ease-in-out, color 160ms ease-in-out, transform 160ms ease-in-out;
+}
+
+.recent-list li:hover {
+  background: rgba(255, 255, 255, 0.02);
+  transform: translateY(-2px);
+}
+
+.recent-list li:hover .value {
+  color: #1e88e5;
+}
+
+.recent-list li:hover .label {
+  color: #e3f2fd;
 }

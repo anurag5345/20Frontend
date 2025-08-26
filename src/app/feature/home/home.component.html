@@ -36,7 +36,7 @@
     @if(recentInvoices && recentInvoices.length){
     <div>
       <ul class="recent-list">
-        <li *ngFor="let inv of recentInvoices">
+        <li *ngFor="let inv of recentInvoices" (click)="view(inv)" tabindex="0" role="button">
           <div class="inv-number">
             <span class="label">Invoice #</span>
             <span class="value">#{{ inv.invoiceNumber }}</span>

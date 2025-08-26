@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { InvoiceService } from '../../shared/services/invoice.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -13,7 +14,7 @@ export class HomeComponent implements OnInit {
   customerCount: number | null = null;
   recentInvoices: any[] = [];
 
-  constructor(private srv: InvoiceService) {}
+  constructor(private srv: InvoiceService, private router: Router) {}
 
   ngOnInit() {
     this.loadStats();
@@ -26,13 +27,8 @@ export class HomeComponent implements OnInit {
         this.totalInvoices = arr.length;
         const customers = new Set(arr.map((r) => r.customerName));
         this.customerCount = customers.size;
-        const unpaid = arr.filter((r: any) =>
-          r.status ? r.status !== 'paid' : !r.paid
-        );
-        this.totalDue = unpaid.reduce(
-          (acc, r) => acc + (Number(r.totalWithGST) || 0),
-          0
-        );
+        const unpaid = arr.filter((r: any) => (r.status ? r.status !== 'paid' : !r.paid));
+        this.totalDue = unpaid.reduce((acc, r) => acc + (Number(r.totalWithGST) || 0), 0);
         this.recentInvoices = arr
           .slice()
           .sort((a: any, b: any) => {
@@ -48,5 +44,10 @@ export class HomeComponent implements OnInit {
         this.totalDue = 0;
       }
     );
+  }
+
+  view(inv: any) {
+    if (!inv || !inv.id) return;
+    this.router.navigate(['/invoices', inv.id]);
   }
 }
