@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { map, catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
@@ -10,15 +10,52 @@ import { AuthService } from './auth.service';
 export class InvoiceService {
   private api = `${environment.apiUrl}/invoices`;
 
-  constructor(
-    private http: HttpClient,
-    private toast: ToastService,
-    private auth: AuthService
-  ) {}
+  constructor(private http: HttpClient, private toast: ToastService, private auth: AuthService) {}
 
-  list() {
+  list(options?: { page?: number; limit?: number; search?: string; status?: string }) {
+    if (options && Object.keys(options).length) {
+      let params = new HttpParams();
+      if (options.page != null) params = params.set('page', String(options.page));
+      if (options.limit != null) params = params.set('limit', String(options.limit));
+      if (options.search) params = params.set('search', String(options.search));
+      if (options.status) params = params.set('status', String(options.status));
+
+      return this.http.get<any>(this.api, { params }).pipe(
+        map((res) => {
+          const payload = res?.data;
+          if (payload) {
+            if (Array.isArray(payload.items)) {
+              return {
+                data: payload.items,
+                meta: { total: payload.total, page: payload.page, limit: payload.limit },
+              };
+            }
+
+            if (Array.isArray(payload)) {
+              return { data: payload, meta: { total: payload.length } };
+            }
+          }
+
+          if (res && Array.isArray(res.items)) {
+            return {
+              data: res.items,
+              meta: { total: res.total, page: res.page, limit: res.limit },
+            };
+          }
+
+          return res;
+        }),
+        catchError((err) => this.handleError(err))
+      );
+    }
     return this.http.get<any>(this.api).pipe(
-      map((res) => res.data),
+      map((res) => {
+        const payload = res?.data ?? res;
+        if (Array.isArray(payload)) return payload;
+        if (payload && Array.isArray(payload.items)) return payload.items;
+        if (res && Array.isArray(res.items)) return res.items;
+        return [];
+      }),
       catchError((err) => this.handleError(err))
     );
   }
@@ -66,10 +103,7 @@ export class InvoiceService {
     const message = backend?.message || 'Request failed';
 
     const statusCode = backend?.statusCode ?? err?.status;
-    if (
-      (statusCode === 401 || statusCode === '401') &&
-      (this.auth as any).suppressUnauthorized
-    ) {
+    if ((statusCode === 401 || statusCode === '401') && (this.auth as any).suppressUnauthorized) {
       return throwError(() => err);
     }
 

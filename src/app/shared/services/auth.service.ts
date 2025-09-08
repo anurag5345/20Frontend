@@ -45,20 +45,39 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem(this.tokenKey);
-    this.suppressUnauthorized = true;
-    setTimeout(() => (this.suppressUnauthorized = false), 800);
-    location.assign('/login');
+    const token = this.getToken();
+    if (!token) {
+      localStorage.removeItem(this.tokenKey);
+      location.assign('/login');
+      return;
+    }
+
+    // try to notify backend to revoke token; ignore errors and proceed to clear local token
+    this.http
+      .post(`${this.api}/logout`, {}, { headers: { Authorization: `Bearer ${token}` } })
+      .subscribe({
+        next: () => {
+          localStorage.removeItem(this.tokenKey);
+          // briefly suppress 401 handling while redirecting
+          this.suppressUnauthorized = true;
+          setTimeout(() => (this.suppressUnauthorized = false), 800);
+          location.assign('/login');
+        },
+        error: () => {
+          // even if backend fails, clear token locally
+          localStorage.removeItem(this.tokenKey);
+          this.suppressUnauthorized = true;
+          setTimeout(() => (this.suppressUnauthorized = false), 800);
+          location.assign('/login');
+        },
+      });
   }
 
   private handleError(err: any) {
     const backend = err?.error ?? err;
     const message = backend?.message || 'Request failed';
     const statusCode = backend?.statusCode ?? err?.status;
-    if (
-      (statusCode === 401 || statusCode === '401') &&
-      this.suppressUnauthorized
-    ) {
+    if ((statusCode === 401 || statusCode === '401') && this.suppressUnauthorized) {
       return throwError(() => err);
     }
 
@@ -67,7 +86,7 @@ export class AuthService {
     } else {
       this.toast.error(message);
     }
-    
+
     return throwError(() => err);
   }
 }

@@ -17,7 +17,7 @@
       </div>
       <div class="stat">
         <div class="value">
-          {{ totalDue !== null ? totalDue : '—' }}
+          {{ totalDue !== null ? (totalDue | number : '1.2-2') : '—' }}
           <span class="currency">₹</span>
         </div>
         <div class="label">Amount Due (₹)</div>
@@ -33,8 +33,7 @@
 <div class="home-content">
   <div class="card">
     <h3>Recent invoices</h3>
-    @if(recentInvoices && recentInvoices.length){
-    <div>
+    <div *ngIf="recentInvoices && recentInvoices.length; else noRecent">
       <ul class="recent-list">
         <li *ngFor="let inv of recentInvoices" (click)="view(inv)" tabindex="0" role="button">
           <div class="inv-number">
@@ -51,19 +50,17 @@
           </div>
           <div class="inv-status">
             <span class="label">Status</span>
-            <span class="value">{{ inv.status }}</span>
+            <span class="value">{{ inv.status || (inv.paid ? 'paid' : 'unpaid') }}</span>
           </div>
           <div class="inv-amount">
             <span class="label">Amount</span>
-            <span class="value">₹{{ inv.totalWithGST }}</span>
+            <span class="value">{{ inv.totalWithGST | number : '1.2-2' }}</span>
           </div>
         </li>
       </ul>
     </div>
-    } @else {
     <ng-template #noRecent>
       <p class="muted">Open the invoices list to see recent activity.</p>
     </ng-template>
-    }
   </div>
 </div>

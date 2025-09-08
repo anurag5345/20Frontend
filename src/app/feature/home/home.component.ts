@@ -23,7 +23,16 @@ export class HomeComponent implements OnInit {
   loadStats() {
     this.srv.list().subscribe(
       (res: any) => {
-        const arr = (res as any[]) || [];
+        // Accept multiple response shapes:
+        // - array of invoices
+        // - { data: [...] }
+        // - { data: { items: [...], total } }
+        let arr: any[] = [];
+        if (Array.isArray(res)) arr = res;
+        else if (res && Array.isArray(res.data)) arr = res.data;
+        else if (res && res.data && Array.isArray(res.data.items)) arr = res.data.items;
+        else if (res && Array.isArray(res.items)) arr = res.items;
+
         this.totalInvoices = arr.length;
         const customers = new Set(arr.map((r) => r.customerName));
         this.customerCount = customers.size;

@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { InvoiceService } from '../../shared/services/invoice.service';
 import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { ToastService } from '../../shared/ui/toast.service';
 import { ConfirmDialogComponent } from '../../shared/ui/confirm-snack/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-invoice-list',
@@ -17,6 +17,9 @@ export class InvoiceListComponent implements OnInit {
   loading = false;
   searchText = '';
   statusFilter: 'all' | 'paid' | 'unpaid' = 'all';
+  page = 1;
+  limit = 5;
+  total = 0;
   constructor(
     private srv: InvoiceService,
     private router: Router,
@@ -45,8 +48,23 @@ export class InvoiceListComponent implements OnInit {
   }
   fetch() {
     this.loading = true;
-    this.srv.list().subscribe({
-      next: (res: any) => (this.invoices = res || []),
+    const opts: any = { page: this.page, limit: this.limit };
+    if (this.searchText) opts.search = this.searchText;
+    if (this.statusFilter && this.statusFilter !== 'all') opts.status = this.statusFilter;
+
+    this.srv.list(opts).subscribe({
+      next: (res: any) => {
+        if (res && res.data && Array.isArray(res.data)) {
+          this.invoices = res.data;
+          this.total = res.meta?.total ?? this.total;
+        } else if (Array.isArray(res)) {
+          this.invoices = res;
+          this.total = res.length;
+        } else {
+          this.invoices = [];
+          this.total = 0;
+        }
+      },
       error: () => {},
       complete: () => (this.loading = false),
     });
@@ -112,5 +130,24 @@ export class InvoiceListComponent implements OnInit {
       },
       error: () => {},
     });
+  }
+
+  onPageEvent(event: PageEvent) {
+    this.limit = event.pageSize;
+    this.page = event.pageIndex + 1; 
+    this.fetch();
+  }
+
+  onFilterChange() {
+    this.page = 1;
+    this.fetch();
+  }
+
+  get startIndex() {
+    return (this.page - 1) * this.limit + 1;
+  }
+
+  get endIndex() {
+    return Math.min(this.page * this.limit, this.total);
   }
 }

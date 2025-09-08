@@ -33,6 +33,7 @@ import { CommonModule } from '@angular/common';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   ],
   imports: [
     MatButtonModule,
+    MatPaginatorModule,
     MatTooltipModule,
     BrowserModule,
     BrowserAnimationsModule,

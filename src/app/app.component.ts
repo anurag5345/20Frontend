@@ -25,6 +25,5 @@ export class AppComponent {
   logout() {
     this.auth.logout();
     this.toast.info('Logged out', 2000);
-    this.router.navigate(['/']);
   }
 }

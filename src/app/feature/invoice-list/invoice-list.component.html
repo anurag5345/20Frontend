@@ -2,10 +2,20 @@
   <div class="header">
     <h1>Invoices</h1>
     <div class="header-actions">
-      <input class="search" placeholder="Search Customer by Name..." [(ngModel)]="searchText" />
+      <input
+        class="search"
+        placeholder="Search Customer by Name..."
+        [(ngModel)]="searchText"
+        (ngModelChange)="onFilterChange()"
+      />
       <div class="status-filters">
         <label class="sr-only" for="statusFilter">Filter by status </label>
-        <select id="statusFilter" class="status-select" [(ngModel)]="statusFilter">
+        <select
+          id="statusFilter"
+          class="status-select"
+          [(ngModel)]="statusFilter"
+          (ngModelChange)="onFilterChange()"
+        >
           <option value="all">All</option>
           <option value="paid">Paid</option>
           <option value="unpaid">Unpaid</option>
@@ -75,7 +85,6 @@
               class="btn small danger"
               matTooltip="Delete Invoice"
               aria-label="Button that displays a tooltip when focused or hovered over"
-              
               (click)="delete(inv.id)"
             >
               <i class="pi pi-trash" style="font-size: 1.2rem; color: white"></i>
@@ -85,4 +94,15 @@
       </tbody>
     </table>
   </div>
+
+  <mat-paginator
+    class="custom-paginator"
+    [length]="total"
+    [pageSize]="limit"
+    [pageSizeOptions]="[5, 10, 25, 50]"
+    [pageIndex]="page - 1"
+    aria-label="Invoice pagination"
+    (page)="onPageEvent($event)"
+  >
+  </mat-paginator>
 </div>
